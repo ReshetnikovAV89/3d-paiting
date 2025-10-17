@@ -1,0 +1,14 @@
+/* ===== variables ===== */
+:root {
+  --bg: #0b1520;
+  --text: #eaf2ff;
+  --text-menu: #eaf2ff;
+  --ink: #122030;
+  --muted: #66758a;
+  --card: #ffffff;
+  --header-h: 56px;
+
+  --arrow-size: 44px;
+  --arrow-offset-x: 8px;
+  --arrow-top: 40%; /* стрелки выше центра */
+}

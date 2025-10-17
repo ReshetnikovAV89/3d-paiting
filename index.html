@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>3D-Витрина — Фигурки и Диорамы</title>
+  <link rel="stylesheet" href="./styles/style.css" />
+  <link rel="stylesheet" href="./styles/variables.css" />
+
+</head>
+<body class="page">
+
+  <!-- header -->
+  <header class="header">
+    <div class="header__brand" data-i18n="brand">3D-Витрина "Drum@n89 painting"</div>
+    <div class="header__lang">
+      <select id="lang" class="header__lang-select">
+        <option value="ru">RU</option>
+        <option value="en">EN</option>
+        <option value="zh">中文</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- hero -->
+  <section class="hero" aria-label="Главная сцена">
+    <div class="hero__inner">
+      <h1 class="hero__title" data-i18n="title">3D-работы, фигурки и диорамы</h1>
+      <p class="hero__subtitle" data-i18n="subtitle">Ручная покраска. Витрина 2025.</p>
+      <div class="hero__actions">
+        <button class="button button--primary" data-scroll="#cards" data-i18n="cta.view">Смотреть работы</button>
+        <button class="button button--ghost" data-i18n="cta.contact">Связаться</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- cards + arrows -->
+  <section id="cards" class="cards" aria-label="Галерея работ">
+    <div class="cards__wrap">
+      <button class="cards__arrow cards__arrow--left" aria-label="Назад">←</button>
+
+      <ul class="cards__list">
+        <!-- Doom Guy -->
+        <li class="card">
+          <a class="card__media" href="./images/Doom%20Guy.jpeg" data-lightbox data-group="doom">
+            <img class="card__img" src="./images/Doom%20Guy.jpeg" alt="Doom Guy — 1/10" loading="lazy">
+          </a>
+          <div class="card__body">
+            <h3 class="card__title">Doom Guy — 1/10</h3>
+            <ul class="card__tags">
+              <li class="card__tag">Фигурки</li>
+              <li class="card__tag">Игры</li>
+              <li class="card__tag">2025</li>
+            </ul>
+          </div>
+        </li>
+
+        <!-- T-800 -->
+        <li class="card">
+          <a class="card__media" href="./images/T-800.jpeg" data-lightbox data-group="t800">
+            <img class="card__img" src="./images/T-800.jpeg" alt="T-800 — 1/10" loading="lazy">
+          </a>
+          <div class="card__body">
+            <h3 class="card__title">T-800 — 1/10</h3>
+            <ul class="card__tags">
+              <li class="card__tag">Фигурки</li>
+              <li class="card__tag">Кино</li>
+              <li class="card__tag">2025</li>
+            </ul>
+          </div>
+        </li>
+
+        <!-- Deadpool -->
+        <li class="card">
+          <a class="card__media" href="./images/Deadpool.jpeg" data-lightbox data-group="deadpool">
+            <img class="card__img" src="./images/Deadpool.jpeg" alt="Deadpool — 1/10" loading="lazy">
+          </a>
+          <div class="card__body">
+            <h3 class="card__title">Deadpool — 1/10</h3>
+            <ul class="card__tags">
+              <li class="card__tag">Фигурки</li>
+              <li class="card__tag">Комиксы</li>
+              <li class="card__tag">2025</li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+
+      <button class="cards__arrow cards__arrow--right" aria-label="Вперёд">→</button>
+    </div>
+  </section>
+
+  <!-- footer -->
+  <footer class="footer">
+    <small class="footer__copy" data-i18n="foot">© 2025 Ручная покраска миниатюр. Иркутск → мир.</small>
+  </footer>
+
+  <!-- lightbox -->
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox__inner">
+      <img class="lightbox__img" alt="">
+      <button class="lightbox__close" aria-label="Закрыть">×</button>
+    </div>
+  </div>
+
+  <script src="./js/app.js"></script>
+</body>
+</html>
