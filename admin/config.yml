@@ -1,0 +1,30 @@
+backend:
+  name: github
+  repo: YOUR-GITHUB-USER/YOUR-REPO   # ← замени на свой репозиторий, например: AndreD3D/3d-project
+  branch: main
+
+media_folder: "images"      # куда будут сохраняться загруженные фото
+public_folder: "/images"    # путь, по которому они видны на сайте
+
+publish_mode: editorial_workflow
+
+collections:
+  - name: "projects"
+    label: "Проекты"
+    label_singular: "Проект"
+    description: "Карточки витрины"
+    folder: "data/projects"   # CMS будет хранить JSON-файлы проектов здесь
+    create: true
+    extension: "json"
+    format: "json"
+    slug: "{{slug}}"
+    fields:
+      - { label: "Заголовок", name: "title", widget: "string" }
+      - { label: "Год", name: "year", widget: "number", value_type: "int", min: 1900, max: 2100, default: 2025 }
+      - { label: "Теги", name: "tags", widget: "list", default: ["Фигурки"] }
+      - { label: "Группа (для лайтбокса)", name: "group", widget: "string", hint: "например: deadpool, doom, t800" }
+      - { label: "Обложка", name: "cover", widget: "image" }
+      - label: "Фото (галерея)"
+        name: "images"
+        widget: "list"
+        field: { label: "Изображение", name: "src", widget: "image" }

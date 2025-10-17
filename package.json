@@ -1,0 +1,23 @@
+{
+  "name": "3d-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ReshetnikovAV89/3d-paiting.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ReshetnikovAV89/3d-paiting/issues"
+  },
+  "homepage": "https://github.com/ReshetnikovAV89/3d-paiting#readme",
+  "devDependencies": {
+    "decap-server": "^3.3.1"
+  }
+}

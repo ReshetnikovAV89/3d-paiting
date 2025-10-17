@@ -1,4 +1,3 @@
-// app.js — плавный скролл, лайтбокс с группами, мини-i18n, стрелки
 document.addEventListener("DOMContentLoaded", () => {
   /* smooth scroll */
   document.querySelectorAll("[data-scroll]").forEach(btn => {
@@ -10,12 +9,102 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /* lightbox (grouped by data-group) */
+  /* ===== Загрузка данных =====
+     1) Берём стартовый data/projects.json (опционально)
+     2) Плюс подцепляем ВСЕ файлы из папки data/projects/*.json (Decap CMS создаёт туда)
+     Примечание: для локального файла-глоба нужна простая агрегация на клиенте: список имён
+     мы не узнаем, поэтому используем 1 файл (projects.json) как основной.
+     На проде проще: подключим плагин сборки/скрипт, который делает aggregated.json.
+  */
+  async function loadProjects() {
+    try {
+      const base = await fetch("./data/projects.json").then(r => r.json());
+      // Если позже добавим aggregated.json — можно объединить вот так:
+      // const extra = await fetch("./data/aggregated.json").then(r => r.json()).catch(()=>[]);
+      // return [...base, ...extra];
+      return base;
+    } catch (e) {
+      console.error("Не удалось загрузить projects.json", e);
+      return [];
+    }
+  }
+
+  /* ===== Рендер карточек ===== */
+  const listEl = document.getElementById("cardsList");
+
+  function renderProjects(items) {
+    listEl.innerHTML = "";
+    items.forEach(p => {
+      const li = document.createElement("li");
+      li.className = "card";
+
+      // Обложка (кликабельная)
+      const coverA = document.createElement("a");
+      coverA.className = "card__media";
+      coverA.href = p.cover;
+      coverA.dataset.lightbox = "";
+      coverA.dataset.group = p.group || p.title;
+
+      const coverImg = document.createElement("img");
+      coverImg.className = "card__img";
+      coverImg.loading = "lazy";
+      coverImg.alt = p.title;
+      coverImg.src = p.cover;
+      coverA.appendChild(coverImg);
+      li.appendChild(coverA);
+
+      // Доп.фото (скрытые ссылки для лайтбокса)
+      (p.images || []).forEach(it => {
+        const a = document.createElement("a");
+        a.className = "card__media card__media--hidden";
+        a.href = it.src;
+        a.dataset.lightbox = "";
+        a.dataset.group = p.group || p.title;
+        li.appendChild(a);
+      });
+
+      // Тело
+      const body = document.createElement("div");
+      body.className = "card__body";
+
+      const h3 = document.createElement("h3");
+      h3.className = "card__title";
+      h3.textContent = p.title;
+
+      const tags = document.createElement("ul");
+      tags.className = "card__tags";
+      (p.tags || []).forEach(t => {
+        const liTag = document.createElement("li");
+        liTag.className = "card__tag";
+        liTag.textContent = t;
+        tags.appendChild(liTag);
+      });
+
+      body.appendChild(h3);
+      body.appendChild(tags);
+      li.appendChild(body);
+
+      listEl.appendChild(li);
+    });
+
+    bindLightbox(); // навешиваем после рендера
+  }
+
+  /* ===== Лайтбокс ===== */
   const lb = document.getElementById("lightbox");
   const lbImg = lb.querySelector(".lightbox__img");
   const lbClose = lb.querySelector(".lightbox__close");
   let current = 0;
   let groupList = [];
+
+  function bindLightbox() {
+    document.querySelectorAll("[data-lightbox]").forEach(a => {
+      a.addEventListener("click", e => {
+        e.preventDefault();
+        openLB(a);
+      }, { once: false });
+    });
+  }
 
   function openLB(fromLink) {
     const group = fromLink.dataset.group || "__single__";
@@ -28,15 +117,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function closeLB() {
     lb.classList.remove("lightbox--open");
-    setTimeout(() => (lbImg.src = ""), 300);
+    setTimeout(() => (lbImg.src = ""), 250);
   }
-
-  document.querySelectorAll("[data-lightbox]").forEach(a => {
-    a.addEventListener("click", e => {
-      e.preventDefault();
-      openLB(a);
-    });
-  });
 
   lb.addEventListener("click", e => {
     if (e.target === lb || e.target === lbClose) closeLB();
@@ -44,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.addEventListener("keydown", e => {
     if (!lb.classList.contains("lightbox--open")) return;
-    if (e.key === "Escape") closeLB();
+    if (e.key === "Escape") return closeLB();
     if (e.key === "ArrowRight") {
       current = (current + 1) % groupList.length;
       lbImg.src = groupList[current].href;
@@ -55,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* i18n */
+  /* ===== I18N (как было) ===== */
   const dict = {
     ru:{title:"3D-работы, фигурки и диорамы",subtitle:"Ручная покраска. Витрина 2025.", "cta.view":"Смотреть работы","cta.contact":"Связаться", foot:"© 2025 Ручная покраска миниатюр. Иркутск → мир."},
     en:{title:"3D works, figures & dioramas",subtitle:"Hand-painted. Showcase 2025.", "cta.view":"View works","cta.contact":"Contact", foot:"© 2025 Hand-painted miniatures. Irkutsk → world."},
@@ -75,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
     applyLang(sel.value || "ru");
   }
 
-  /* arrows scroll */
+  /* ===== Стрелки прокрутки ===== */
   const list = document.querySelector(".cards__list");
   const left = document.querySelector(".cards__arrow--left");
   const right = document.querySelector(".cards__arrow--right");
@@ -88,4 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
     left.addEventListener("click", () => scrollStep(-1));
     right.addEventListener("click", () => scrollStep(1));
   }
+
+  /* старт */
+  loadProjects().then(renderProjects);
 });

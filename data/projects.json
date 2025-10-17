@@ -1,0 +1,30 @@
+[
+  {
+    "title": "Doom Guy — 1/10",
+    "year": 2025,
+    "tags": ["Фигурки", "Игры", "2025"],
+    "group": "doom",
+    "cover": "images/Doom Guy.jpeg",
+    "images": []
+  },
+  {
+    "title": "T-800 — 1/10",
+    "year": 2025,
+    "tags": ["Фигурки", "Кино", "2025"],
+    "group": "t800",
+    "cover": "images/T-800.jpeg",
+    "images": []
+  },
+  {
+    "title": "Deadpool — 1/10",
+    "year": 2025,
+    "tags": ["Фигурки", "Комиксы", "2025"],
+    "group": "deadpool",
+    "cover": "images/Deadpool.jpeg",
+    "images": [
+      { "src": "images/Deadpool_2.jpeg" },
+      { "src": "images/Deadpool_3.jpeg" },
+      { "src": "images/Deadpool_4.jpeg" }
+    ]
+  }
+]
