@@ -12,23 +12,6 @@
     "images": []
   },
   {
-    "year": 2025,
-    "tags": [
-      "Фигурки"
-    ],
-    "title": "Predator — 1/10",
-    "group": "Кино",
-    "cover": "/images/photo_2025-10-17_14-00-41.jpg",
-    "images": [
-      {
-        "src": "/images/photo_2025-10-17_14-00-41-2-.jpg"
-      },
-      {
-        "src": "/images/photo_2025-10-17_14-00-41-3-.jpg"
-      }
-    ]
-  },
-  {
     "title": "Doom Guy — 1/10",
     "year": 2025,
     "tags": [
@@ -63,11 +46,34 @@
     ]
   },
   {
-  "title": "Alien — 1/10",
-  "year": 2025,
-  "tags": ["Фигурки", "Кино", "2025"],
-  "group": "alien",
-  "cover": "images/assassin/Alien.jpg",
-  "images": []
-}
+    "title": "Alien — 1/10",
+    "year": 2025,
+    "tags": [
+      "Фигурки",
+      "Кино",
+      "2025"
+    ],
+    "group": "alien",
+    "cover": "images/assassin/Alien.jpg",
+    "images": []
+  },
+  {
+    "title": "Predator",
+    "date": "2025-05-01",
+    "cover": "images/assassin/Predator.jpg",
+    "gallery": [
+      {
+        "image": "images/assassin/Predator-2.jpg"
+      }
+    ],
+    "scale": "1/10",
+    "paints": [
+      "Vallejo"
+    ],
+    "steps": [],
+    "tags": [],
+    "published": true,
+    "order": 0,
+    "slug": "assassin"
+  }
 ]
