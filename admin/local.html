@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8" />
+<title>JSON-редактор карточек (оффлайн)</title>
+<style>
+  body { font: 14px/1.5 system-ui, sans-serif; max-width: 900px; margin: 24px auto; padding: 0 16px; }
+  form { display: grid; gap: 8px; grid-template-columns: 1fr 1fr; }
+  label { display: grid; gap: 4px; }
+  textarea { min-height: 96px; }
+  .full { grid-column: 1 / -1; }
+  .row { display: flex; gap: 8px; }
+  pre { background: #f6f8fa; padding: 12px; border-radius: 8px; overflow: auto; }
+</style>
+<h1>Редактор projects.json (без сервера)</h1>
+
+<p>1) Нажми «Загрузить текущий projects.json», выбери файл из папки проекта.<br>
+2) Заполни форму (или вставь готовый объект справа).<br>
+3) Нажми «Добавить в список» → «Скачать обновлённый projects.json».</p>
+
+<div class="row">
+  <input type="file" id="file" accept=".json">
+  <button id="download" disabled>Скачать обновлённый projects.json</button>
+</div>
+
+<form id="form">
+  <label>title<input name="title" required></label>
+  <label>date<input name="date" placeholder="YYYY-MM-DD" required></label>
+  <label>scale<input name="scale" placeholder="1/10"></label>
+  <label>order<input name="order" type="number" value="0"></label>
+
+  <label class="full">slug
+    <input name="slug" placeholder="assassin" required>
+  </label>
+
+  <label class="full">cover (путь)
+    <input name="cover" placeholder="images/assassin/cover.jpg">
+  </label>
+
+  <label class="full">gallery (по одному пути в строке)
+    <textarea name="gallery" placeholder="images/assassin/step1.jpg&#10;images/assassin/step2.jpg"></textarea>
+  </label>
+
+  <label class="full">paints (через запятую)
+    <input name="paints" placeholder="Vallejo..., Tamiya...">
+  </label>
+
+  <label class="full">steps (по одному шагу в строке)
+    <textarea name="steps" placeholder="Грунт серым Vallejo.&#10;Базовые тени и подсветки."></textarea>
+  </label>
+
+  <label>tags (через запятую)<input name="tags" placeholder="WIP, helmet"></label>
+  <label>published
+    <select name="published">
+      <option value="true" selected>true</option>
+      <option value="false">false</option>
+    </select>
+  </label>
+
+  <div class="full row">
+    <button id="add" type="button" disabled>Добавить в список</button>
+    <button id="clear" type="button">Очистить форму</button>
+  </div>
+</form>
+
+<h2>Текущий JSON</h2>
+<pre id="out">Загрузите data/projects.json…</pre>
+
+<script>
+let data = [];
+let fileHandle = null;
+
+const $ = (s) => document.querySelector(s);
+const out = $("#out");
+const form = $("#form");
+const btnAdd = $("#add");
+const btnDownload = $("#download");
+
+$("#file").addEventListener("change", async (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const txt = await f.text();
+  try {
+    const parsed = JSON.parse(txt);
+    if (!Array.isArray(parsed)) throw new Error("projects.json должен быть массивом []");
+    data = parsed;
+    fileHandle = f.name;
+    btnAdd.disabled = false;
+    btnDownload.disabled = false;
+    render();
+  } catch (err) {
+    alert("Ошибка чтения JSON: " + err.message);
+  }
+});
+
+function render() {
+  out.textContent = JSON.stringify(data, null, 2);
+}
+
+function toList(v) {
+  return v.split("\n").map(s => s.trim()).filter(Boolean);
+}
+function toCSV(v) {
+  return v.split(",").map(s => s.trim()).filter(Boolean);
+}
+
+function buildItem(formData) {
+  const title = formData.get("title");
+  const date = formData.get("date");
+  const slug = formData.get("slug");
+  const order = Number(formData.get("order") || 0);
+  const cover = formData.get("cover") || `images/${slug}/cover.jpg`;
+
+  const gallery = toList(formData.get("gallery") || "").map(p => ({ image: p }));
+  const paints = toCSV(formData.get("paints") || "");
+  const steps = toList(formData.get("steps") || "").map(t => ({ text: t }));
+  const tags = toCSV(formData.get("tags") || "");
+  const published = formData.get("published") === "true";
+  const scale = formData.get("scale") || "";
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error("Дата должна быть в формате YYYY-MM-DD");
+  if (!slug) throw new Error("Нужен slug");
+
+  return { title, date, cover, gallery, scale, paints, steps, tags, published, order, slug };
+}
+
+$("#add").addEventListener("click", () => {
+  try {
+    const item = buildItem(new FormData(form));
+    // Remove possible duplicate by (slug, date)
+    data = data.filter(p => !(p.slug === item.slug && p.date === item.date));
+    data.push(item);
+    // Sort by order desc
+    data.sort((a,b)=> (b.order ?? 0) - (a.order ?? 0));
+    render();
+    alert("Добавлено! Нажмите 'Скачать обновлённый projects.json', затем замените файл в репозитории.");
+  } catch (e) {
+    alert(e.message);
+  }
+});
+
+$("#clear").addEventListener("click", () => form.reset());
+
+$("#download").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "projects.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+</script>
+</html>

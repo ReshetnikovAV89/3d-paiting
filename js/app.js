@@ -174,3 +174,42 @@ document.addEventListener("DOMContentLoaded", () => {
   /* старт */
   loadProjects().then(renderProjects);
 });
+
+  /* ===== Нормализация данных (старый + новый форматы) ===== */
+  function fixPath(p) {
+    if (!p) return "";
+    // Заменяем обратные слэши на прямые
+    let s = p.replace(/\\/g, "/");
+    // Если нет расширения — предполагаем .jpg
+    if (!/\.(jpg|jpeg|png|webp|gif)$/i.test(s)) s += ".jpg";
+    return s;
+  }
+
+  function normalizeItem(p) {
+    // Если карточка помечена как скрытая — вернём null (отфильтруем)
+    if (p.published === false) return null;
+
+    // Новый формат (gallery[{image}], date, slug, order...)
+    if (Array.isArray(p.gallery) || "date" in p || "slug" in p) {
+      return {
+        title: p.title,
+        group: p.slug || p.group || p.title,
+        cover: fixPath(p.cover || (p.gallery?.[0]?.image || "")),
+        images: (p.gallery || []).map(it => ({ src: fixPath(it.image) })),
+        tags: p.tags || [],
+        order: typeof p.order === "number" ? p.order : 0,
+        _date: p.date || ""
+      };
+    }
+
+    // Старый формат (images[{src}], year, group...)
+    return {
+      title: p.title,
+      group: p.group || p.title,
+      cover: fixPath(p.cover || (p.images?.[0]?.src || "")),
+      images: (p.images || []).map(it => ({ src: fixPath(it.src) })),
+      tags: p.tags || [],
+      order: 0,
+      _date: ""
+    };
+  }

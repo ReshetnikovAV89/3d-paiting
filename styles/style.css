@@ -156,3 +156,37 @@
 @media (max-width: 640px) {
   :root { --arrow-offset-x: 4px; }
 }
+
+/* --- Стеклянный скроллбар для горизонтальной ленты --- */
+.cards__list {
+  /* Firefox */
+  scrollbar-width: thin;                 /* auto | thin | none */
+  scrollbar-color: rgba(255,255,255,.45) transparent;
+}
+
+/* WebKit (Chrome/Edge/Safari) */
+.cards__list::-webkit-scrollbar { height: 10px; }
+.cards__list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.cards__list::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.45);     /* стеклянный эффект */
+  border-radius: 999px;
+  border: 2px solid transparent;         /* «зазор» вокруг */
+  backdrop-filter: blur(6px);            /* размываем фон под ползунком */
+}
+.cards__list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,.6);
+}
+
+/* На тёмных фонах можно слегка затемнить трек, чтобы контраст был выше */
+@media (prefers-color-scheme: dark) {
+  .cards__list {
+    scrollbar-color: rgba(255,255,255,.5) rgba(255,255,255,.08);
+  }
+  .cards__list::-webkit-scrollbar-track {
+    background: rgba(255,255,255,.08);
+  }
+}
+
+

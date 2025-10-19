@@ -1,30 +1,29 @@
 backend:
-  name: github
-  repo: YOUR-GITHUB-USER/YOUR-REPO   # ← замени на свой репозиторий, например: AndreD3D/3d-project
-  branch: main
+  name: git-gateway
+  branch: main   # или ваша ветка
 
-media_folder: "images"      # куда будут сохраняться загруженные фото
-public_folder: "/images"    # путь, по которому они видны на сайте
+media_folder: "images"        # куда грузить файлы в репо
+public_folder: "/images"      # как на них ссылаться в сайте
 
-publish_mode: editorial_workflow
+locale: "ru"
+publish_mode: editorial_workflow  # черновик → публикация (можно убрать)
 
 collections:
   - name: "projects"
     label: "Проекты"
     label_singular: "Проект"
-    description: "Карточки витрины"
-    folder: "data/projects"   # CMS будет хранить JSON-файлы проектов здесь
+    folder: "data/projects"
     create: true
-    extension: "json"
-    format: "json"
+    format: "json"           # файлы карточек будут JSON
     slug: "{{slug}}"
     fields:
-      - { label: "Заголовок", name: "title", widget: "string" }
-      - { label: "Год", name: "year", widget: "number", value_type: "int", min: 1900, max: 2100, default: 2025 }
-      - { label: "Теги", name: "tags", widget: "list", default: ["Фигурки"] }
-      - { label: "Группа (для лайтбокса)", name: "group", widget: "string", hint: "например: deadpool, doom, t800" }
-      - { label: "Обложка", name: "cover", widget: "image" }
-      - label: "Фото (галерея)"
-        name: "images"
-        widget: "list"
-        field: { label: "Изображение", name: "src", widget: "image" }
+      - { name: "title", label: "Заголовок", widget: "string" }
+      - { name: "date", label: "Дата", widget: "datetime", format: "YYYY-MM-DD" }
+      - { name: "cover", label: "Обложка", widget: "image" }
+      - { name: "gallery", label: "Галерея", widget: "list", field: { name: "image", label: "Изображение", widget: "image" } }
+      - { name: "scale", label: "Масштаб (например 1/10)", widget: "string", required: false }
+      - { name: "paints", label: "Краски/материалы", widget: "list", required: false, field: { name: "item", label: "Пункт", widget: "string" } }
+      - { name: "steps", label: "Шаги/описание", widget: "list", required: false, field: { name: "text", label: "Шаг", widget: "text" } }
+      - { name: "tags", label: "Теги", widget: "list", required: false }
+      - { name: "published", label: "Публиковать", widget: "boolean", default: true }
+      - { name: "order", label: "Порядок (сортировка)", widget: "number", required: false }
